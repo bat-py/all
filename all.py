@@ -104,7 +104,7 @@ def fast_join(client, clear_list, target_group):
 
 
     target_group_entity = InputPeerChannel(target_group.id, target_group.access_hash)
-
+    err = 0
     for user in users:
         try:
             print("Adding {}".format(user))
@@ -114,9 +114,13 @@ def fast_join(client, clear_list, target_group):
 
             client(InviteToChannelRequest(target_group_entity, [user_to_add]))
             print("Waiting 1 Second...")
-            time.sleep(61)
+            time.sleep(1)
         except PeerFloodError:
             print("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
+            if err == 5:
+                print('sim blocked')
+                break
+            err += 1
         except UserPrivacyRestrictedError:
             print("The user's privacy settings do not allow you to do this. Skipping.")
         except:
@@ -153,6 +157,8 @@ def slow_join(client, clear_list, target_group):
 
     n = 0
 
+    err = 0
+
     for user in users:
         n += 1
         if n % 50 == 0:
@@ -165,7 +171,13 @@ def slow_join(client, clear_list, target_group):
                 print("Waiting for 60-180 Seconds...")
                 time.sleep(random.randrange(60, 180))
         except PeerFloodError:
+            if err == 5:
+                print('sim blocked')
+                break
+            err += 1
+
             print("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
+
         except UserPrivacyRestrictedError:
             print("The user's privacy settings do not allow you to do this. Skipping.")
         except:
