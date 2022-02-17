@@ -8,6 +8,10 @@ import sys
 import traceback
 import time
 import random
+from telethon.tl.functions.channels import GetParticipantsRequest
+from telethon.tl.types import ChannelParticipantsSearch
+from time import sleep
+
 
 #    writer.writerow(['username', 'user id', 'access hash', 'name', 'group', 'group id'])
 def get_members_list(client, msg):
@@ -42,7 +46,24 @@ def get_members_list(client, msg):
     target_group = groups[int(g_index)]
 
     print('Fetching Members...')
-    all_participants = client.get_participants(target_group, aggressive=True)
+
+    offset = 0
+    limit = 9999
+    all_participants = []
+
+    while True:
+        participants = client(GetParticipantsRequest(
+            target_group, ChannelParticipantsSearch(''), offset, limit,
+            hash=0
+        )) 
+        
+        if not participants.users:
+            break
+
+        all_participants.extend(participants.users)
+        offset += len(participants.users)
+
+
     my_group_members_list = []
 
     for user in all_participants:
@@ -186,8 +207,8 @@ def slow_join(client, clear_list, target_group):
 
 
 if __name__ == '__main__':
-    api_id = 5193417
-    api_hash = '55909d877eef1f996884aee6734dddb9'
+    api_id = 5834063
+    api_hash = '19562bd0e42c33f334b7735632fbb822'
     phone = input('Enter phone number: ')
     passwd = "Behruz2000"
     
