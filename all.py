@@ -80,6 +80,7 @@ def get_members_list(client, msg):
             last_name = ""
         name = (first_name + ' ' + last_name).strip()
         my_group_members_list.append([username, user.id, user.access_hash, name, target_group.title, target_group.id])
+
     print('Members scraped successfully.\n')
 
     return my_group_members_list, target_group
@@ -207,18 +208,19 @@ if __name__ == '__main__':
     api_id = 5834063
     api_hash = '19562bd0e42c33f334b7735632fbb822'
     phone = input('Enter phone number: ')
-    # passwd = "Behruz2000"
-    passwd = input("Password: ")
+    # passwd = ""
 
     client = TelegramClient(phone, api_id, api_hash)
     client.connect()
     if not client.is_user_authorized():
         client.send_code_request(phone)
-        mycode = input("Enter the code:")
+        mycode = input("Enter the code: ")
 
         try:
-            client.sign_in(phone, mycode, password=passwd)
+            # client.sign_in(phone, mycode, password=passwd)
+            client.sign_in(phone, mycode)
         except SessionPasswordNeededError:
+            passwd = input("Password: ")
             client.sign_in(password=passwd)
 
     my_group = get_members_list(client, 'Choose your group number: ')
@@ -228,7 +230,7 @@ if __name__ == '__main__':
     another_group_members_list = get_members_list(client, 'Choose a group number to scrape members from: ')[0]
 
     clear_list = sort_members(my_group_members_list, another_group_members_list)
-    print(clear_list)
+
     t = '\n1. Fast join\n2. Slow join by 50 members\nChoose join mode: '
     fast_or_slow_join = int(input(t))
 
