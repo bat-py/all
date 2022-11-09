@@ -31,7 +31,7 @@ def get_members_list(client, msg):
 
     for chat in chats:
         try:
-            if chat.megagroup == True:
+            if chat.megagroup:
                 groups.append(chat)
         except:
             continue
@@ -63,7 +63,6 @@ def get_members_list(client, msg):
         all_participants.extend(participants.users)
         offset += len(participants.users)
 
-
     my_group_members_list = []
 
     for user in all_participants:
@@ -85,6 +84,7 @@ def get_members_list(client, msg):
 
     return my_group_members_list, target_group
 
+
 def sort_members(my_group_members_list, another_group_members_list):
     my_d = my_group_members_list
     another_d = another_group_members_list
@@ -97,6 +97,7 @@ def sort_members(my_group_members_list, another_group_members_list):
 
     clear_data = another - my
     return list(clear_data)
+
 
 def fast_join(client, clear_list, target_group):
     users = clear_list
@@ -116,13 +117,10 @@ def fast_join(client, clear_list, target_group):
 
     for chat in chats:
         try:
-            if chat.megagroup == True:
+            if chat.megagroup:
                 groups.append(chat)
         except:
             continue
-
-
-
 
     target_group_entity = InputPeerChannel(target_group.id, target_group.access_hash)
     err = 0
@@ -149,6 +147,7 @@ def fast_join(client, clear_list, target_group):
             print("Unexpected Error")
             continue
 
+
 def slow_join(client, clear_list, target_group):
     users = clear_list
     chats = []
@@ -167,12 +166,10 @@ def slow_join(client, clear_list, target_group):
 
     for chat in chats:
         try:
-            if chat.megagroup == True:
+            if chat.megagroup:
                 groups.append(chat)
         except:
             continue
-
-
 
     target_group_entity = InputPeerChannel(target_group.id, target_group.access_hash)
 
@@ -210,8 +207,8 @@ if __name__ == '__main__':
     api_id = 5834063
     api_hash = '19562bd0e42c33f334b7735632fbb822'
     phone = input('Enter phone number: ')
-    passwd = "Behruz2000"
-    
+    # passwd = "Behruz2000"
+    passwd = input("Password: ")
 
     client = TelegramClient(phone, api_id, api_hash)
     client.connect()
@@ -224,7 +221,6 @@ if __name__ == '__main__':
         except SessionPasswordNeededError:
             client.sign_in(password=passwd)
 
-
     my_group = get_members_list(client, 'Choose your group number: ')
     my_group_members_list = my_group[0]
     target_group = my_group[1]
@@ -232,7 +228,7 @@ if __name__ == '__main__':
     another_group_members_list = get_members_list(client, 'Choose a group number to scrape members from: ')[0]
 
     clear_list = sort_members(my_group_members_list, another_group_members_list)
-
+    print(clear_list)
     t = '\n1. Fast join\n2. Slow join by 50 members\nChoose join mode: '
     fast_or_slow_join = int(input(t))
 
